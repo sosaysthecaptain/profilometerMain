@@ -14,6 +14,7 @@ var socket = io.connect(apiURL);
 
 // Listen for command event from Socket
 socket.on('command', function(data) {
+    console.log(data.command);
 
     if (data.command.slice(0, 8) == 'moveXBy:') {
         let quantity = data.command.slice(9, data.command.length);

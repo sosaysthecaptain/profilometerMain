@@ -1,3 +1,7 @@
+//import { io } from './node_modules/socket.io'
+var io = require('socket.io-client');
+
+// END EXPERIMENTAL IMPORT
 const electron = require('electron')
 // Module to control application life.
 const app = electron.app
@@ -12,19 +16,7 @@ const url = require('url')
 let mainWindow
 
 
-// Test running Python script
-// var scriptPath = './pythonBackend/main.py';
-// let pyPort = 4042;
-// let pyProc = null;
-
-// pyProc = require('child_process').spawn('python', [scriptPath, pyPort])
-
-// if (pyProc != null) {
-//     console.log(pyProc)
-//     console.log('child process success!')
-// }
-
-// PYTHON, V2
+// Spawn Python process
 var spawn = require('child_process').spawn,
     py    = spawn('python', ['./pythonBackend/main.py']),
     data = [1,2,3,4,5,6,7,8,9],
@@ -43,11 +35,46 @@ py.stdout.on('end', function(){
 
 console.log('sending data: ' + data)
 py.stdin.write(JSON.stringify(data));
-py.stdin.end();
+//py.stdin.end();
 
+//py.stdin.write(JSON.stringify(data));
+py.stdin.end();
 
 // END PYTHON-RELATED
 
+// SOCKET/PARSER
+console.log('loading correctly')
+
+// Socket client
+var apiURL = 'https://damp-sierra-42875.herokuapp.com/';
+
+// Make connection
+var socket = io.connect(apiURL);
+
+// Listen for command event from Socket, pass to Python
+socket.on('command', function(data) {
+  console.log('RECEIVING COMMAND FROM SERVER: ');
+  console.log(data.command);
+
+  // Send to python
+  dataForPassing = JSON.stringify(data.command)
+  console.log('Data to pass: ' + JSON.stringify(data.command));
+  //var newPython = spawn('python', ['./pythonBackend/main.py'])
+  //newPython.stdin.write(dataForPassing);
+
+  // JS-side parser functionality goes here
+  // if (data.command.slice(0, 8) == 'moveXBy:') {
+  //     let quantity = data.command.slice(9, data.command.length);
+  //     console.log(quantity)
+  //     demoFunction(Number(quantity));
+  // }
+});
+
+// function demoFunction(quantity) {
+//     console.log('demo parser function. Quantity: ' + quantity);
+// }
+// END SOCKET/PARSER
+// EVERYTHING BELOW HERE IS ELECTRON-RELATED
 
 
 function createWindow () {
@@ -56,7 +83,7 @@ function createWindow () {
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, 'index.html'),
+    pathname: path.join(__dirname, './pythonBackend/pythonOutput.txt'),     // index.html, log file for dev mode
     protocol: 'file:',
     slashes: true
   }))
