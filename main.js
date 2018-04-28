@@ -74,6 +74,22 @@ socket.on('command', function(data) {
 //     console.log('demo parser function. Quantity: ' + quantity);
 // }
 // END SOCKET/PARSER
+
+// PLAYING WITH HTTP REQUESTS
+// const request = net.request({
+//   method: 'GET',
+//   protocol: 'http:',
+//   hostname: '0.0.0.0',
+//   port: 5000,
+//   path: '/testRequestString'
+// })
+
+
+
+
+//
+
+
 // EVERYTHING BELOW HERE IS ELECTRON-RELATED
 
 
@@ -83,7 +99,7 @@ function createWindow () {
 
   // and load the index.html of the app.
   mainWindow.loadURL(url.format({
-    pathname: path.join(__dirname, './pythonBackend/pythonOutput.txt'),     // index.html, log file for dev mode
+    pathname: path.join(__dirname, './index.html'),     // index.html, log file for dev mode
     protocol: 'file:',
     slashes: true
   }))
